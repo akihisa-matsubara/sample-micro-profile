@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>sample-micro-profile-service-opposite</artifactId>
+    <packaging>war</packaging>
+
+    <parent>
+        <groupId>dev.sample</groupId>
+        <artifactId>sample-micro-profile-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <properties>
+        <final.name>sample-micro-profile-service-opposite</final.name>
+    </properties>
+
+    <build>
+        <finalName>${final.name}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>io.openliberty.tools</groupId>
+                <artifactId>liberty-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

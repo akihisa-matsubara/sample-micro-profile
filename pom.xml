@@ -1,0 +1,148 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dev.sample</groupId>
+    <artifactId>sample-micro-profile-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>sample-micro-profile-service</module>
+        <module>sample-micro-profile-service-opposite</module>
+    </modules>
+
+    <properties>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- server settings -->
+        <openliberty.version>[20.0.0.8,)</openliberty.version>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+
+        <!-- oss version -->
+        <microprofile.version>3.3</microprofile.version>
+        <jaegertracing.version>0.34.0</jaegertracing.version>
+
+        <!-- plugin version -->
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-war-plugin.version>3.2.2</maven-war-plugin.version>
+        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+        <liberty-maven-plugin.version>3.2.1</liberty-maven-plugin.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>github-maven</id>
+            <url>https://raw.githubusercontent.com/akihisa-matsubara/maven/mvn-repo/</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.microprofile</groupId>
+                <artifactId>microprofile</artifactId>
+                <version>${microprofile.version}</version>
+                <type>pom</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jaegertracing</groupId>
+                <artifactId>jaeger-client</artifactId>
+                <version>${jaegertracing.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.microprofile</groupId>
+            <artifactId>microprofile</artifactId>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven-war-plugin.version}</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Build-Timestamp-UTC>${maven.build.timestamp}</Build-Timestamp-UTC>
+                            </manifestEntries>
+                        </archive>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                        <packagingExcludes>
+                            pom.xml,
+                            resources/sass/
+                            resources/dummy-data/
+                        </packagingExcludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Build-Timestamp-UTC>${maven.build.timestamp}</Build-Timestamp-UTC>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>io.openliberty.tools</groupId>
+                    <artifactId>liberty-maven-plugin</artifactId>
+                    <version>${liberty-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>package-server</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>create</goal>
+                                <goal>install-feature</goal>
+                                <goal>deploy</goal>
+                                <goal>package</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>target/wlp-package</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <include>runnable</include>
+                        <serverName>${final.name}</serverName>
+                        <bootstrapProperties>
+                            <project.name>${final.name}</project.name>
+                            <jwt.issuer>https://server.example.com</jwt.issuer>
+                        </bootstrapProperties>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
